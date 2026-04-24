@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "SafeDrive"
+version = "1.0.0"
+id = "artifacts/safedrive"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20224
+
+[services.development]
+run = "pnpm --filter @workspace/safedrive run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/safedrive", "run", "build" ]
+publicDir = "artifacts/safedrive/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20224"
+BASE_PATH = "/"
