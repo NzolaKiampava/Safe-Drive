@@ -1,0 +1,8 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "Reu7OGReVp1YaX0WkKuZO"
+uri = "file://artifacts/mockup-sandbox/public/images/safedrive-hero.png"
+type = "image"
+title = "sleek modern car security tech"

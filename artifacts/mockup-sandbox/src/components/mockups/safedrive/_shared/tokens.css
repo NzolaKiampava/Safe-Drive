@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--sd-bg);
+  --color-foreground: var(--sd-text);
+  --color-card: var(--sd-surface);
+  --color-card-foreground: var(--sd-text);
+  --color-popover: var(--sd-surface-elevated);
+  --color-popover-foreground: var(--sd-text);
+  --color-primary: var(--sd-accent);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--sd-surface-elevated);
+  --color-secondary-foreground: var(--sd-text);
+  --color-muted: var(--sd-surface-elevated);
+  --color-muted-foreground: var(--sd-text-muted);
+  --color-accent: var(--sd-accent-soft);
+  --color-accent-foreground: var(--sd-accent);
+  --color-destructive: var(--sd-danger);
+  --color-destructive-foreground: #ffffff;
+  --color-border: var(--sd-border);
+  --color-input: var(--sd-border);
+  --color-ring: var(--sd-accent);
+}
+
+:root {
+  --sd-bg: #070B14;
+  --sd-surface: #0E1526;
+  --sd-surface-elevated: #162038;
+  --sd-border: #233050;
+  --sd-text: #F1F5F9;
+  --sd-text-muted: #94A3B8;
+  
+  --sd-accent: #FF6A00;
+  --sd-accent-soft: rgba(255, 106, 0, 0.15);
+  
+  --sd-success: #10B981;
+  --sd-warning: #F59E0B;
+  --sd-danger: #EF4444;
+  --sd-info: #3B82F6;
+  
+  --radius: 0.5rem;
+}
+
+body {
+  background-color: var(--sd-bg);
+  color: var(--sd-text);
+  font-family: 'Space Grotesk', 'Inter', sans-serif;
+}
