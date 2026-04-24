@@ -1,5 +1,5 @@
 import React from "react";
-import { User, CreditCard, Bell, Shield, Key, Smartphone, Car, CheckCircle2 } from "lucide-react";
+import { User, CreditCard, Bell, Shield, Key, Smartphone, Car, CheckCircle2, MonitorSmartphone, Mail, MessageSquare } from "lucide-react";
 import { AppShell } from "./_shared/AppShell";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,16 +18,27 @@ export function Profile() {
         
         {/* Profile Header */}
         <div className="flex flex-col md:flex-row items-center md:items-start gap-6 p-8 bg-card border border-border rounded-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] rounded-full pointer-events-none"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-card via-[#0c152a] to-[#1a1208]"></div>
           
-          <Avatar className="w-24 h-24 border-4 border-background shadow-xl">
-            <AvatarFallback className="bg-secondary text-2xl font-medium text-foreground">CM</AvatarFallback>
-          </Avatar>
+          <svg className="absolute right-0 top-0 h-full w-1/2 opacity-20 text-primary/30 pointer-events-none" viewBox="0 0 400 200" fill="none">
+            <circle cx="300" cy="100" r="150" stroke="currentColor" strokeWidth="2" strokeDasharray="4 12" />
+            <circle cx="300" cy="100" r="100" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" />
+            <circle cx="300" cy="100" r="50" stroke="currentColor" strokeWidth="1" strokeDasharray="2 4" />
+            <path d="M 150 100 L 450 100" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" />
+            <path d="M 300 -50 L 300 250" stroke="currentColor" strokeWidth="1" strokeDasharray="4 8" />
+          </svg>
+
+          <div className="relative">
+            <div className="absolute -inset-2 bg-primary/20 rounded-full blur-md"></div>
+            <Avatar className="w-28 h-28 border-4 border-background shadow-2xl relative z-10">
+              <AvatarFallback className="bg-gradient-to-br from-secondary to-primary/20 text-4xl font-bold text-foreground">CM</AvatarFallback>
+            </Avatar>
+          </div>
           
-          <div className="flex-1 text-center md:text-left">
+          <div className="flex-1 text-center md:text-left relative z-10 pt-2">
             <div className="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold text-foreground">Carlos Mendes</h1>
-              <Badge className="bg-primary/20 text-primary border-primary/30 font-medium hover:bg-primary/30 w-max mx-auto md:mx-0">
+              <h1 className="text-3xl font-bold text-foreground">Carlos Mendes</h1>
+              <Badge className="bg-primary/20 text-primary border-primary/30 font-medium hover:bg-primary/30 w-max mx-auto md:mx-0 shadow-sm">
                 Plano Premium
               </Badge>
             </div>
@@ -41,10 +52,10 @@ export function Profile() {
         {/* Tabs Area */}
         <Tabs defaultValue="personal" className="w-full">
           <TabsList className="w-full justify-start bg-transparent border-b border-border rounded-none h-12 p-0 space-x-6 overflow-x-auto">
-            <TabsTrigger value="personal" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3">Dados Pessoais</TabsTrigger>
-            <TabsTrigger value="vehicles" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3">Veículos</TabsTrigger>
-            <TabsTrigger value="notifications" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3">Notificações</TabsTrigger>
-            <TabsTrigger value="security" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none rounded-none px-0 pb-3">Segurança da Conta</TabsTrigger>
+            <TabsTrigger value="personal" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:text-primary text-muted-foreground rounded-none px-0 pb-3 font-semibold">Dados Pessoais</TabsTrigger>
+            <TabsTrigger value="vehicles" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:text-primary text-muted-foreground rounded-none px-0 pb-3 font-semibold">Veículos</TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:text-primary text-muted-foreground rounded-none px-0 pb-3 font-semibold">Notificações</TabsTrigger>
+            <TabsTrigger value="security" className="data-[state=active]:bg-transparent data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:shadow-none data-[state=active]:text-primary text-muted-foreground rounded-none px-0 pb-3 font-semibold">Segurança da Conta</TabsTrigger>
           </TabsList>
 
           <div className="py-6 mt-2 grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -195,6 +206,30 @@ export function Profile() {
                       </div>
                       <Button variant="outline" size="sm" className="border-border">Configurar</Button>
                     </div>
+
+                    <div className="space-y-4 pt-4 border-t border-border">
+                      <h4 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Sessões Ativas</h4>
+                      <div className="flex items-center justify-between p-4 bg-background border border-border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <MonitorSmartphone className="w-5 h-5 text-primary" />
+                          <div>
+                            <p className="font-medium text-sm">MacBook Pro (Chrome)</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Lisboa, PT • IP: 192.168.1.1</p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">Sessão Atual</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-4 bg-background border border-border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <Smartphone className="w-5 h-5 text-muted-foreground" />
+                          <div>
+                            <p className="font-medium text-sm">iPhone 14 Pro (App SafeDrive)</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Lisboa, PT • Há 2 horas</p>
+                          </div>
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-danger hover:text-danger hover:bg-danger/10">Terminar</Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -208,26 +243,36 @@ export function Profile() {
                   <CardTitle className="text-base">Faturação</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="p-3 bg-secondary/50 rounded-lg border border-border">
+                  <div className="p-4 bg-secondary/50 rounded-lg border border-border">
                     <p className="text-sm text-muted-foreground mb-1">Plano Atual</p>
-                    <p className="font-semibold text-lg">Premium <span className="text-sm font-normal text-muted-foreground">/ €14.99/mês</span></p>
+                    <p className="font-semibold text-xl text-foreground">Premium <span className="text-sm font-normal text-muted-foreground">/ €14.99/mês</span></p>
+                    <div className="mt-3 pt-3 border-t border-border/50">
+                      <p className="text-xs text-muted-foreground">Próxima renovação: <span className="font-medium text-foreground">15 Out 2023</span></p>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-3 text-sm">
-                    <CreditCard className="w-4 h-4 text-muted-foreground" />
-                    <span>Visa terminando em 4242</span>
+                  <div className="flex items-center space-x-3 text-sm p-3 bg-background border border-border rounded-md">
+                    <div className="w-8 h-5 bg-foreground rounded flex items-center justify-center text-background font-bold text-[10px] italic">VISA</div>
+                    <span className="flex-1 font-mono">**** 4242</span>
+                    <Button variant="ghost" size="sm" className="h-6 px-2 text-xs">Mudar</Button>
                   </div>
-                  <Button variant="link" className="p-0 h-auto text-primary text-sm">Ver Faturas</Button>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 border-primary/50 text-primary hover:bg-primary/10">Mudar plano</Button>
+                    <Button variant="link" className="px-2 text-muted-foreground">Faturas</Button>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-card border-border shadow-none">
+              <Card className="bg-gradient-to-b from-card to-secondary/30 border-border shadow-none">
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Shield className="w-6 h-6 text-primary" />
+                    <MessageSquare className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">Precisa de ajuda?</h3>
-                  <p className="text-sm text-muted-foreground mb-4">A nossa equipa de suporte está disponível 24/7.</p>
-                  <Button variant="outline" className="w-full border-border">Contactar Suporte</Button>
+                  <h3 className="font-semibold mb-2">Suporte Prioritário</h3>
+                  <p className="text-sm text-muted-foreground mb-4">A sua conta Premium inclui suporte 24/7 dedicado.</p>
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1 border-border bg-background"><Mail className="w-4 h-4 mr-2"/> Email</Button>
+                    <Button className="flex-1 bg-primary text-white hover:bg-primary/90">Chat</Button>
+                  </div>
                 </CardContent>
               </Card>
 

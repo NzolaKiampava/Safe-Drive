@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, ShieldAlert, Shield, ToggleLeft, Activity, Lock, EyeOff, Radio, Smartphone, Car, Settings2 } from "lucide-react";
+import { ShieldCheck, ShieldAlert, Shield, ToggleLeft, Activity, Lock, EyeOff, Radio, Smartphone, Car, Settings2, Camera, Clock } from "lucide-react";
 import { AppShell } from "./_shared/AppShell";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -40,16 +40,20 @@ export function Security() {
                 </div>
                 <h3 className="text-xl font-bold text-success mb-2">Excelente</h3>
                 <p className="text-sm text-muted-foreground">Todos os sistemas de segurança estão operacionais. O seu veículo está protegido.</p>
-                <Button variant="outline" className="mt-6 border-border w-full">Executar Diagnóstico</Button>
+                <div className="flex items-center text-xs text-muted-foreground mt-4 pt-4 border-t border-border w-full justify-center">
+                  <Clock className="w-3 h-3 mr-1" /> Última verificação: Há 2 minutos
+                </div>
+                <Button variant="outline" className="mt-4 border-border w-full">Executar Diagnóstico</Button>
               </CardContent>
             </Card>
 
             {/* Security Modes */}
             <Card className="bg-card border-border">
-              <CardHeader>
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <CardTitle className="text-lg">Modos de Operação</CardTitle>
+                <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">Proteção Ativa</Badge>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pt-4">
                 {[
                   { name: "Modo Normal", desc: "Proteção padrão. Alertas ativados.", icon: ShieldCheck, active: true },
                   { name: "Modo Discreto", desc: "Alarmes silenciosos. Apenas notificações push.", icon: EyeOff, active: false },
