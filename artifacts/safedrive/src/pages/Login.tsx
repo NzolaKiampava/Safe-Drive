@@ -41,10 +41,10 @@ export default function Login() {
 
   function onSubmit(data: LoginFormValues) {
     toast({
-      title: "Sessão iniciada (demo)",
+      title: "Sessão iniciada",
       description: `Bem-vindo de volta, ${data.email}!`,
     });
-    // In a real app we would set auth state and redirect to dashboard
+    setLocation("/dashboard");
   }
 
   return (
