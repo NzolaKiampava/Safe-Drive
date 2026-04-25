@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   { id: "cameras", label: "Câmeras", icon: Camera, href: "/dashboard/cameras" },
   { id: "alerts", label: "Alertas", icon: Bell, href: "/dashboard/alerts" },
   { id: "gps", label: "GPS", icon: MapPin, href: "/dashboard/gps" },
-  { id: "security", label: "Segurança", icon: ShieldCheck },
+  { id: "security", label: "Segurança", icon: ShieldCheck, href: "/dashboard/security" },
   { id: "profile", label: "Perfil", icon: User },
 ];
 

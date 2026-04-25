@@ -12,6 +12,7 @@ import Dashboard from "@/pages/Dashboard";
 import GPS from "@/pages/GPS";
 import Cameras from "@/pages/Cameras";
 import Alerts from "@/pages/Alerts";
+import Security from "@/pages/Security";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/dashboard/cameras" component={Cameras} />
       <Route path="/dashboard/alerts" component={Alerts} />
       <Route path="/dashboard/gps" component={GPS} />
+      <Route path="/dashboard/security" component={Security} />
       <Route component={NotFound} />
     </Switch>
   );
