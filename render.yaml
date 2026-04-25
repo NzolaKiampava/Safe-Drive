@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: safedrive-api
+    env: node
+    plan: free
+    buildCommand: pnpm --dir artifacts/api-server run build
+    startCommand: pnpm --dir artifacts/api-server run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+
+  - type: static
+    name: safedrive-frontend
+    env: static
+    plan: free
+    buildCommand: pnpm --dir artifacts/safedrive run build
+    staticPublishPath: artifacts/safedrive/dist/public
+    envVars:
+      - key: BASE_PATH
+        value: "/"
+      - key: PORT
+        value: "3000"
+    routes:
+      - path: /api
+        destination: https://safedrive-api.onrender.com
