@@ -11,6 +11,7 @@ import Demo from "@/pages/Demo";
 import Dashboard from "@/pages/Dashboard";
 import GPS from "@/pages/GPS";
 import Cameras from "@/pages/Cameras";
+import Alerts from "@/pages/Alerts";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/demo" component={Demo} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/dashboard/cameras" component={Cameras} />
+      <Route path="/dashboard/alerts" component={Alerts} />
       <Route path="/dashboard/gps" component={GPS} />
       <Route component={NotFound} />
     </Switch>
