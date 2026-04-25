@@ -36,7 +36,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { id: "cameras", label: "Câmeras", icon: Camera },
+  { id: "cameras", label: "Câmeras", icon: Camera, href: "/dashboard/cameras" },
   { id: "alerts", label: "Alertas", icon: Bell },
   { id: "gps", label: "GPS", icon: MapPin, href: "/dashboard/gps" },
   { id: "security", label: "Segurança", icon: ShieldCheck },
