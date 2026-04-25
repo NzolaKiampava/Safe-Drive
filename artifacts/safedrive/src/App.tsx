@@ -9,6 +9,7 @@ import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import Demo from "@/pages/Demo";
 import Dashboard from "@/pages/Dashboard";
+import GPS from "@/pages/GPS";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/signup" component={Signup} />
       <Route path="/demo" component={Demo} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/dashboard/gps" component={GPS} />
       <Route component={NotFound} />
     </Switch>
   );
