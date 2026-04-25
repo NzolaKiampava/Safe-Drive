@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   { id: "alerts", label: "Alertas", icon: Bell, href: "/dashboard/alerts" },
   { id: "gps", label: "GPS", icon: MapPin, href: "/dashboard/gps" },
   { id: "security", label: "Segurança", icon: ShieldCheck, href: "/dashboard/security" },
-  { id: "profile", label: "Perfil", icon: User },
+  { id: "profile", label: "Perfil", icon: User, href: "/dashboard/profile" },
 ];
 
 export function AppShell({ active, children }: AppShellProps) {

@@ -13,6 +13,7 @@ import GPS from "@/pages/GPS";
 import Cameras from "@/pages/Cameras";
 import Alerts from "@/pages/Alerts";
 import Security from "@/pages/Security";
+import Profile from "@/pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/dashboard/alerts" component={Alerts} />
       <Route path="/dashboard/gps" component={GPS} />
       <Route path="/dashboard/security" component={Security} />
+      <Route path="/dashboard/profile" component={Profile} />
       <Route component={NotFound} />
     </Switch>
   );
