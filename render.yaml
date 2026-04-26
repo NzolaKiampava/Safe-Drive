@@ -3,7 +3,7 @@ services:
     name: safedrive-api
     env: node
     plan: free
-    buildCommand: pnpm --dir artifacts/api-server run build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/api-server run build
     startCommand: pnpm --dir artifacts/api-server run start
     envVars:
       - key: NODE_ENV
@@ -15,7 +15,7 @@ services:
     name: safedrive-frontend
     env: static
     plan: free
-    buildCommand: pnpm --dir artifacts/safedrive run build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/safedrive run build
     staticPublishPath: artifacts/safedrive/dist/public
     envVars:
       - key: BASE_PATH
