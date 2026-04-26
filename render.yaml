@@ -16,7 +16,7 @@ services:
     env: static
     plan: free
     buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/safedrive run build
-    staticPublishPath: artifacts/safedrive/dist
+    staticPublishPath: artifacts/safedrive/dist/public
     routes:
       - path: /api
         destination: https://safedrive-api.onrender.com
