@@ -38,12 +38,25 @@ logger.info({ publicPath }, "Serving static files from");
 app.use(express.static(publicPath));
 
 app.use((req, res, next) => {
-  // If the request is for an API route that wasn't handled, return 404
-  if (req.path.startsWith("/api")) {
-    return res.status(404).json({ message: "API route not found" });
+  const url = req.originalUrl || req.url;
+  logger.info({ url, path: req.path }, "Catch-all reached");
+
+  // If the request is for an API route that wasn't handled, return 404 JSON
+  if (url.startsWith("/api")) {
+    logger.warn({ url }, "API route not found, returning 404 JSON");
+    return res.status(404).json({ 
+      message: "API route not found",
+      path: url
+    });
   }
+
   // Otherwise, serve the frontend index.html
-  res.sendFile(path.join(publicPath, "index.html"));
+  res.sendFile(path.join(publicPath, "index.html"), (err) => {
+    if (err) {
+      logger.error({ err, publicPath }, "Error sending index.html");
+      res.status(500).send("Error loading frontend");
+    }
+  });
 });
 
 export default app;
