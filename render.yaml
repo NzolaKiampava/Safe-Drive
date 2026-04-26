@@ -16,7 +16,7 @@ services:
     env: static
     plan: free
     buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/safedrive run build
-    staticPublishPath: artifacts/safedrive/dist/public
+    staticPublishPath: artifacts/safedrive/dist
     envVars:
       - key: BASE_PATH
         value: "/"
