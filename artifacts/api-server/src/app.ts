@@ -1,4 +1,5 @@
 import path from "node:path";
+import fs from "node:fs";
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
@@ -33,7 +34,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", router);
 
 const publicPath = path.resolve(process.cwd(), "../safedrive/dist");
-logger.info({ publicPath }, "Serving static files from");
+try {
+  const files = fs.readdirSync(publicPath);
+  logger.info({ publicPath, files }, "Static directory content");
+} catch (err) {
+  logger.error({ err, publicPath }, "Could not read static directory");
+}
 
 app.use(express.static(publicPath));
 
