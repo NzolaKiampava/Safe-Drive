@@ -22,4 +22,14 @@ app.listen(port, (err) => {
   }
 
   logger.info({ port }, "Server listening");
+
+  // Keep-alive mechanism for Render free tier
+  const KEEP_ALIVE_URL = "https://safe-drive-qtpn.onrender.com/api/healthz";
+  const KEEP_ALIVE_INTERVAL = 10 * 60 * 1000; // 10 minutes
+
+  setInterval(() => {
+    fetch(KEEP_ALIVE_URL)
+      .then((res) => logger.info({ status: res.status }, "Keep-alive ping successful"))
+      .catch((err) => logger.error({ err }, "Keep-alive ping failed"));
+  }, KEEP_ALIVE_INTERVAL);
 });
