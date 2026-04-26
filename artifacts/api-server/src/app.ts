@@ -32,7 +32,9 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-const publicPath = path.resolve(__dirname, "../../safedrive/dist");
+const publicPath = path.resolve(process.cwd(), "../safedrive/dist");
+logger.info({ publicPath }, "Serving static files from");
+
 app.use(express.static(publicPath));
 
 app.use((_req, res) => {
