@@ -3,20 +3,10 @@ services:
     name: safedrive-api
     env: node
     plan: free
-    buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/api-server run build
+    buildCommand: pnpm install --no-frozen-lockfile && pnpm -r run build
     startCommand: pnpm --dir artifacts/api-server run start
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 3000
-
-  - type: static
-    name: safedrive-frontend
-    env: static
-    plan: free
-    buildCommand: pnpm install --no-frozen-lockfile && pnpm --dir artifacts/safedrive run build
-    staticPublishPath: artifacts/safedrive/dist
-    routes:
-      - path: /api
-        destination: https://safedrive-api.onrender.com
+        value: 10000

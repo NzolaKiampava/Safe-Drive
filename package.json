@@ -10,8 +10,9 @@
   },
   "private": true,
   "devDependencies": {
-    "typescript": "~5.9.2",
+    "@rollup/rollup-win32-x64-msvc": "^4.60.2",
+    "@types/node": "^20.14.14",
     "prettier": "^3.8.1",
-    "@types/node": "^20.14.14"
+    "typescript": "~5.9.2"
   }
 }
