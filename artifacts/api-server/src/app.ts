@@ -35,7 +35,7 @@ app.use("/api", router);
 const publicPath = path.resolve(__dirname, "../../safedrive/dist");
 app.use(express.static(publicPath));
 
-app.get("*", (_req, res) => {
+app.get("(.*)", (_req, res) => {
   res.sendFile(path.join(publicPath, "index.html"));
 });
 
