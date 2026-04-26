@@ -8,7 +8,7 @@ const rawPort = process.env.PORT || "3000";
 
 const port = Number(rawPort);
 
-const basePath = process.env.BASE_PATH || "/";
+const basePath = process.env.BASE_PATH || "";
 
 export default defineConfig({
   base: basePath,
