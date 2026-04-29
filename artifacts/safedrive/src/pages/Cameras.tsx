@@ -40,13 +40,63 @@ interface CameraItem {
   status: "online" | "offline";
   motion: string | null;
   recording: boolean;
+  videoSrc?: string;
 }
 
-const cameras: CameraItem[] = [
-  { id: "tesla-cabin", name: "Cabine", vehicle: "Tesla Model 3", status: "online", motion: null, recording: true },
-  { id: "tesla-rear", name: "Traseira", vehicle: "Tesla Model 3", status: "online", motion: "Há 5 min", recording: true },
-  { id: "bmw-front", name: "Frontal", vehicle: "BMW i4", status: "online", motion: null, recording: false },
-  { id: "bmw-cabin", name: "Cabine", vehicle: "BMW i4", status: "offline", motion: null, recording: false },
+const FEATURED_VIDEO_SRC =
+  "https://videos.pexels.com/video-files/2103099/2103099-uhd_2560_1440_30fps.mp4";
+const FEATURED_VIDEO_POSTER =
+  "https://images.pexels.com/videos/2103099/free-video-2103099.jpg?auto=compress&cs=tinysrgb&w=1280";
+
+interface CameraItemWithMedia extends CameraItem {
+  poster?: string;
+}
+
+const cameras: CameraItemWithMedia[] = [
+  {
+    id: "tesla-cabin",
+    name: "Cabine",
+    vehicle: "Tesla Model 3",
+    status: "online",
+    motion: null,
+    recording: true,
+    videoSrc:
+      "https://videos.pexels.com/video-files/3121459/3121459-hd_1920_1080_24fps.mp4",
+    poster:
+      "https://images.pexels.com/videos/3121459/free-video-3121459.jpg?auto=compress&cs=tinysrgb&w=640",
+  },
+  {
+    id: "tesla-rear",
+    name: "Traseira",
+    vehicle: "Tesla Model 3",
+    status: "online",
+    motion: "Há 5 min",
+    recording: true,
+    videoSrc:
+      "https://videos.pexels.com/video-files/2053100/2053100-hd_1920_1080_30fps.mp4",
+    poster:
+      "https://images.pexels.com/videos/2053100/free-video-2053100.jpg?auto=compress&cs=tinysrgb&w=640",
+  },
+  {
+    id: "bmw-front",
+    name: "Frontal",
+    vehicle: "BMW i4",
+    status: "online",
+    motion: null,
+    recording: false,
+    videoSrc:
+      "https://videos.pexels.com/video-files/1721308/1721308-hd_1920_1080_25fps.mp4",
+    poster:
+      "https://images.pexels.com/videos/1721308/free-video-1721308.jpg?auto=compress&cs=tinysrgb&w=640",
+  },
+  {
+    id: "bmw-cabin",
+    name: "Cabine",
+    vehicle: "BMW i4",
+    status: "offline",
+    motion: null,
+    recording: false,
+  },
 ];
 
 function matchesFilter(cam: CameraItem, filter: FilterId) {
@@ -166,69 +216,27 @@ export default function Cameras() {
           <div className="xl:col-span-2 space-y-6">
             <Card className="bg-card border-border shadow-none overflow-hidden flex flex-col">
               <div className="relative aspect-video bg-gradient-to-b from-[#0a1128] to-black border-b border-border overflow-hidden">
-                {/* Simulated video feed grid */}
-                <div
-                  className="absolute inset-0 opacity-15"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
-                  }}
-                />
-                <div
-                  className="absolute inset-0 opacity-5"
-                  style={{
-                    background:
-                      "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.1) 2px, rgba(255,255,255,0.1) 4px)",
-                  }}
+                {/* Live video feed */}
+                <video
+                  className="absolute inset-0 w-full h-full object-cover"
+                  src={FEATURED_VIDEO_SRC}
+                  poster={FEATURED_VIDEO_POSTER}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  data-testid="video-featured-feed"
                 />
 
-                {/* Car silhouette */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <svg
-                    width="400"
-                    height="200"
-                    viewBox="0 0 400 200"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M50,150 L80,80 L320,80 L350,150 Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeDasharray="4 4"
-                      className="text-primary/50"
-                    />
-                    <path
-                      d="M120,80 L150,40 L250,40 L280,80 Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="text-primary/30"
-                    />
-                    <rect
-                      x="70"
-                      y="120"
-                      width="40"
-                      height="20"
-                      fill="currentColor"
-                      className="text-primary/20"
-                    />
-                    <rect
-                      x="290"
-                      y="120"
-                      width="40"
-                      height="20"
-                      fill="currentColor"
-                      className="text-primary/20"
-                    />
-                    <path
-                      d="M150,120 L250,120"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      className="text-primary/40"
-                    />
-                  </svg>
-                </div>
+                {/* Subtle CCTV scanline overlay on top of the video */}
+                <div
+                  className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
+                  style={{
+                    background:
+                      "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.25) 2px, rgba(255,255,255,0.25) 4px)",
+                  }}
+                />
 
                 {/* Viewfinder brackets */}
                 <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-white/30 rounded-tl-sm pointer-events-none" />
@@ -410,27 +418,38 @@ export default function Cameras() {
                   className="group relative w-full text-left rounded-lg border border-border bg-card overflow-hidden hover:border-primary/50 transition-colors"
                   data-testid={`camera-${cam.id}`}
                 >
-                  <div className="aspect-video bg-gradient-to-b from-[#0a1128] to-black relative">
+                  <div className="aspect-video bg-gradient-to-b from-[#0a1128] to-black relative overflow-hidden">
+                    {cam.status === "online" && cam.videoSrc && (
+                      <video
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src={cam.videoSrc}
+                        poster={cam.poster}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        preload="metadata"
+                        data-testid={`video-${cam.id}`}
+                      />
+                    )}
                     <div
-                      className="absolute inset-0 opacity-10"
+                      className="absolute inset-0 opacity-10 pointer-events-none mix-blend-overlay"
                       style={{
-                        backgroundImage:
-                          "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                        backgroundSize: "20px 20px",
+                        background:
+                          "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.2) 2px, rgba(255,255,255,0.2) 4px)",
                       }}
                     />
-                    <div className="absolute top-1/2 left-0 right-0 h-px bg-white/10" />
-                    <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-white/20" />
-                    <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-white/20" />
-                    <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-white/20" />
-                    <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-white/20" />
+                    <div className="absolute top-2 left-2 w-3 h-3 border-t border-l border-white/30 pointer-events-none" />
+                    <div className="absolute top-2 right-2 w-3 h-3 border-t border-r border-white/30 pointer-events-none" />
+                    <div className="absolute bottom-2 left-2 w-3 h-3 border-b border-l border-white/30 pointer-events-none" />
+                    <div className="absolute bottom-2 right-2 w-3 h-3 border-b border-r border-white/30 pointer-events-none" />
 
                     {cam.status === "online" ? (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Play className="w-8 h-8 text-white/50 group-hover:text-white transition-colors" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
+                        <Play className="w-8 h-8 text-white/0 group-hover:text-white transition-colors" />
                       </div>
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center bg-secondary/50">
+                      <div className="absolute inset-0 flex items-center justify-center bg-secondary/70">
                         <span className="text-xs text-muted-foreground font-mono">
                           OFFLINE
                         </span>
