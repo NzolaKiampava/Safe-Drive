@@ -13,6 +13,8 @@ import {
   Eye,
   EyeOff,
   SwitchCamera,
+  Loader2,
+  WifiOff,
 } from "lucide-react";
 import { useObjectDetection } from "@/hooks/useObjectDetection";
 import { VisionOverlay } from "@/components/vision/VisionOverlay";
@@ -125,7 +127,7 @@ export default function Cameras() {
   const [now, setNow] = useState(() => new Date());
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { detector, isLoading: isAiLoading } = useObjectDetection();
+  const { detector, status: aiStatus, isLoading: isAiLoading, isReady: isAiReady, error: aiError } = useObjectDetection();
 
   useEffect(() => {
     let stream: MediaStream | null = null;
@@ -411,19 +413,34 @@ export default function Cameras() {
 
                     <div className="w-px h-4 bg-white/20 mx-1" />
 
+                    {/* Vision AI status button */}
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`text-white hover:bg-white/20 h-8 px-2 gap-1.5 ${visionEnabled ? "bg-primary/40" : ""}`}
-                      onClick={() => setVisionEnabled(!visionEnabled)}
-                      disabled={isAiLoading}
+                      className={`h-8 px-2 gap-1.5 font-bold text-[10px] uppercase tracking-wider transition-all ${
+                        aiStatus === 'error'
+                          ? 'text-red-400 bg-red-500/20'
+                          : aiStatus === 'loading'
+                          ? 'text-yellow-300 bg-yellow-500/10 cursor-wait'
+                          : visionEnabled && isAiReady
+                          ? 'text-primary bg-primary/30 hover:bg-primary/40'
+                          : 'text-white hover:bg-white/20'
+                      }`}
+                      onClick={() => isAiReady && setVisionEnabled(!visionEnabled)}
+                      disabled={!isAiReady}
+                      title={aiError ?? undefined}
                     >
-                      {visionEnabled ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      <span className="text-[10px] font-bold uppercase tracking-wider">
-                        {isAiLoading ? "A carregar..." : "Visão IA"}
+                      {aiStatus === 'loading' && <Loader2 className="w-4 h-4 animate-spin" />}
+                      {aiStatus === 'error' && <WifiOff className="w-4 h-4" />}
+                      {aiStatus === 'ready' && (visionEnabled ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />)}
+                      <span>
+                        {aiStatus === 'loading' ? 'A carregar IA...' :
+                         aiStatus === 'error'   ? 'IA falhou' :
+                         visionEnabled         ? 'IA Activa' : 'Visão IA'}
                       </span>
                     </Button>
 
+                    {/* Real / Simulated camera toggle */}
                     <Button
                       variant="ghost"
                       size="sm"

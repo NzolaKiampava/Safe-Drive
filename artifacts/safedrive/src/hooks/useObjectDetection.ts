@@ -1,42 +1,75 @@
 import { useEffect, useRef, useState } from 'react';
-import { ObjectDetector, FilesetResolver, Detection } from '@mediapipe/tasks-vision';
+import { ObjectDetector, FilesetResolver } from '@mediapipe/tasks-vision';
+
+export type DetectorStatus = 'idle' | 'loading' | 'ready' | 'error';
 
 export function useObjectDetection() {
   const [detector, setDetector] = useState<ObjectDetector | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<DetectorStatus>('idle');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const detectorRef = useRef<ObjectDetector | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function initDetector() {
+      setStatus('loading');
+      setErrorMsg(null);
+
       try {
+        console.log('[Vision] Loading WASM runtime...');
+
+        // Use pinned version matching the installed package for reliability
         const vision = await FilesetResolver.forVisionTasks(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'
         );
-        
+
+        console.log('[Vision] WASM loaded. Loading model...');
+
         const objectDetector = await ObjectDetector.createFromOptions(vision, {
           baseOptions: {
-            modelAssetPath: `https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite`,
-            delegate: "GPU"
+            modelAssetPath:
+              'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float16/1/efficientdet_lite0.tflite',
+            // CPU is more compatible across iOS Safari, Android WebView, etc.
+            delegate: 'CPU',
           },
-          scoreThreshold: 0.5,
-          runningMode: "VIDEO"
+          scoreThreshold: 0.4,
+          maxResults: 5,
+          runningMode: 'VIDEO',
         });
 
+        if (cancelled) {
+          objectDetector.close();
+          return;
+        }
+
+        console.log('[Vision] Model ready!');
+        detectorRef.current = objectDetector;
         setDetector(objectDetector);
-        setIsLoading(false);
+        setStatus('ready');
       } catch (err) {
-        console.error("Failed to initialize ObjectDetector:", err);
-        setError("Não foi possível carregar a IA de visão.");
-        setIsLoading(false);
+        if (cancelled) return;
+        const msg = err instanceof Error ? err.message : String(err);
+        console.error('[Vision] Failed to init detector:', msg);
+        setErrorMsg(msg);
+        setStatus('error');
       }
     }
 
     initDetector();
 
     return () => {
-      detector?.close();
+      cancelled = true;
+      detectorRef.current?.close();
+      detectorRef.current = null;
     };
   }, []);
 
-  return { detector, isLoading, error };
+  return {
+    detector,
+    status,
+    isLoading: status === 'loading',
+    isReady: status === 'ready',
+    error: errorMsg,
+  };
 }
