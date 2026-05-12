@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { ObjectDetector, Detection } from '@mediapipe/tasks-vision';
+import { CATEGORY_TRANSLATIONS } from '@/lib/translations';
 
 interface VisionOverlayProps {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -30,7 +31,6 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
     const COLORS = ['#f59e0b', '#22d3ee', '#a78bfa', '#34d399', '#fb7185'];
 
     const animate = () => {
-      // Video must be playing and have valid dimensions
       if (
         video.readyState < 2 ||
         video.videoWidth === 0 ||
@@ -40,7 +40,6 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
         return;
       }
 
-      // Keep canvas pixel size in sync with its displayed size
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
@@ -53,25 +52,20 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
         ctx.scale(dpr, dpr);
       }
 
-      // Logical display dimensions
       const displayW = rect.width;
       const displayH = rect.height;
 
-      // The video is rendered with object-fit: cover — compute the actual
-      // rendered region so bounding boxes map correctly onto the overlay.
       const videoAspect = video.videoWidth / video.videoHeight;
       const canvasAspect = displayW / displayH;
 
       let renderW: number, renderH: number, offsetX: number, offsetY: number;
 
       if (videoAspect > canvasAspect) {
-        // Video is wider than canvas — crop sides
         renderH = displayH;
         renderW = displayH * videoAspect;
         offsetX = (displayW - renderW) / 2;
         offsetY = 0;
       } else {
-        // Video is taller than canvas — crop top/bottom
         renderW = displayW;
         renderH = displayW / videoAspect;
         offsetX = 0;
@@ -95,6 +89,11 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
         const { boundingBox, categories } = detection;
         if (!boundingBox || !categories.length) return;
 
+        const category = categories[0].categoryName || '';
+        const label = CATEGORY_TRANSLATIONS[category.toLowerCase()] || category;
+        const score = Math.round(categories[0].score * 100);
+        const text = `${label} ${score}%`;
+
         const color = COLORS[i % COLORS.length];
 
         const x = boundingBox.originX * scaleX + offsetX;
@@ -108,13 +107,10 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
         ctx.strokeRect(x, y, w, h);
 
         // Semi-transparent fill
-        ctx.fillStyle = color + '1A'; // 10% opacity
+        ctx.fillStyle = color + '1A';
         ctx.fillRect(x, y, w, h);
 
         // Label background
-        const label = categories[0].categoryName;
-        const score = Math.round(categories[0].score * 100);
-        const text = `${label} ${score}%`;
         ctx.font = 'bold 11px monospace';
         const textW = ctx.measureText(text).width;
 
@@ -129,14 +125,9 @@ export function VisionOverlay({ videoRef, detector, enabled }: VisionOverlayProp
         const bSize = 10;
         ctx.strokeStyle = color;
         ctx.lineWidth = 3;
-
-        // Top-left
         ctx.beginPath(); ctx.moveTo(x, y + bSize); ctx.lineTo(x, y); ctx.lineTo(x + bSize, y); ctx.stroke();
-        // Top-right
         ctx.beginPath(); ctx.moveTo(x + w - bSize, y); ctx.lineTo(x + w, y); ctx.lineTo(x + w, y + bSize); ctx.stroke();
-        // Bottom-left
         ctx.beginPath(); ctx.moveTo(x, y + h - bSize); ctx.lineTo(x, y + h); ctx.lineTo(x + bSize, y + h); ctx.stroke();
-        // Bottom-right
         ctx.beginPath(); ctx.moveTo(x + w - bSize, y + h); ctx.lineTo(x + w, y + h); ctx.lineTo(x + w, y + h - bSize); ctx.stroke();
       });
 

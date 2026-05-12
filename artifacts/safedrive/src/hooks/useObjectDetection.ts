@@ -32,7 +32,7 @@ export function useObjectDetection() {
             // CPU is more compatible across iOS Safari, Android WebView, etc.
             delegate: 'CPU',
           },
-          scoreThreshold: 0.4,
+          scoreThreshold: 0.35,
           maxResults: 5,
           runningMode: 'VIDEO',
         });
