@@ -3,19 +3,27 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import fs from "fs";
+import { createRequire } from "module";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 // Plugin: copies MediaPipe WASM files into public/mediapipe-wasm
-// This avoids CDN version mismatches — WASM always matches the installed package.
+// Uses require.resolve to find the package regardless of pnpm hoisting strategy.
 function mediapipeWasmPlugin() {
   return {
     name: "mediapipe-wasm-copy",
     buildStart() {
-      const src = path.resolve(
-        import.meta.dirname,
-        "../../node_modules/@mediapipe/tasks-vision/wasm"
+      const require = createRequire(import.meta.url);
+      // Resolve the real package location (works with pnpm virtual store)
+      const pkgDir = path.dirname(
+        require.resolve("@mediapipe/tasks-vision/package.json")
       );
+      const src = path.join(pkgDir, "wasm");
       const dest = path.resolve(import.meta.dirname, "public/mediapipe-wasm");
+
+      if (!fs.existsSync(src)) {
+        console.warn("[mediapipe-wasm] WASM source not found at:", src);
+        return;
+      }
       if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
       }
@@ -26,6 +34,7 @@ function mediapipeWasmPlugin() {
     },
   };
 }
+
 
 const rawPort = process.env.PORT || "3000";
 
