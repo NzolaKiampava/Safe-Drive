@@ -134,12 +134,18 @@ export default function Cameras() {
       if (useRealCamera) {
         try {
           stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment" },
+            video: { facingMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } },
             audio: false,
           });
           if (videoRef.current) {
+            // Clear any src attribute first — critical for mobile Safari
+            videoRef.current.removeAttribute("src");
             videoRef.current.srcObject = stream;
+            // Must call play() explicitly on mobile
+            await videoRef.current.play();
           }
+          // Auto-enable Vision AI when real camera starts
+          setVisionEnabled(true);
         } catch (err) {
           console.error("Error accessing camera:", err);
           toast({
@@ -153,6 +159,7 @@ export default function Cameras() {
         if (videoRef.current) {
           videoRef.current.srcObject = null;
         }
+        setVisionEnabled(false);
       }
     }
 
@@ -163,6 +170,7 @@ export default function Cameras() {
         stream.getTracks().forEach(track => track.stop());
       }
     };
+
   }, [useRealCamera, toast]);
 
   useEffect(() => {
