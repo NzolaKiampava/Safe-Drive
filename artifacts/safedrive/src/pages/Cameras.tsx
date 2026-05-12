@@ -10,7 +10,13 @@ import {
   AlertCircle,
   Circle,
   MapPin,
+  Eye,
+  EyeOff,
+  FlipView,
 } from "lucide-react";
+import { useObjectDetection } from "@/hooks/useObjectDetection";
+import { VisionOverlay } from "@/components/vision/VisionOverlay";
+import { useRef } from "react";
 import { AppShell } from "@/components/layout/AppShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -114,7 +120,50 @@ export default function Cameras() {
   const [search, setSearch] = useState("");
   const [recording, setRecording] = useState(true);
   const [micOn, setMicOn] = useState(false);
+  const [visionEnabled, setVisionEnabled] = useState(false);
+  const [useRealCamera, setUseRealCamera] = useState(false);
   const [now, setNow] = useState(() => new Date());
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const { detector, isLoading: isAiLoading } = useObjectDetection();
+
+  useEffect(() => {
+    let stream: MediaStream | null = null;
+
+    async function setupCamera() {
+      if (useRealCamera) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" },
+            audio: false,
+          });
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (err) {
+          console.error("Error accessing camera:", err);
+          toast({
+            title: "Erro na câmera",
+            description: "Não foi possível acessar a câmera do dispositivo.",
+            variant: "destructive",
+          });
+          setUseRealCamera(false);
+        }
+      } else {
+        if (videoRef.current) {
+          videoRef.current.srcObject = null;
+        }
+      }
+    }
+
+    setupCamera();
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [useRealCamera, toast]);
 
   useEffect(() => {
     const interval = window.setInterval(() => setNow(new Date()), 1000);
@@ -218,15 +267,22 @@ export default function Cameras() {
               <div className="relative aspect-video bg-gradient-to-b from-[#0a1128] to-black border-b border-border overflow-hidden">
                 {/* Live video feed */}
                 <video
+                  ref={videoRef}
                   className="absolute inset-0 w-full h-full object-cover"
-                  src={FEATURED_VIDEO_SRC}
-                  poster={FEATURED_VIDEO_POSTER}
+                  src={useRealCamera ? undefined : FEATURED_VIDEO_SRC}
+                  poster={useRealCamera ? undefined : FEATURED_VIDEO_POSTER}
                   autoPlay
                   loop
                   muted
                   playsInline
                   preload="auto"
                   data-testid="video-featured-feed"
+                />
+
+                <VisionOverlay 
+                  videoRef={videoRef} 
+                  detector={detector} 
+                  enabled={visionEnabled} 
                 />
 
                 {/* Subtle CCTV scanline overlay on top of the video */}
@@ -284,18 +340,18 @@ export default function Cameras() {
                   </div>
                 </div>
 
-                {/* Tracking Box */}
-                <div
-                  className="absolute top-1/3 left-1/4 w-32 h-32 border-2 border-warning/80 rounded-sm bg-warning/5 animate-pulse"
-                  style={{ boxShadow: "0 0 15px rgba(245,158,11,0.2)" }}
-                >
-                  <div className="absolute -top-7 left-[-2px] bg-warning text-warning-foreground text-[11px] px-2 py-0.5 font-bold shadow-md flex items-center">
-                    <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-ping" />
-                    Movimento 89%
+                {/* Tracking Box (Legacy CSS simulation, now only visible if AI is off and motion is high) */}
+                {!visionEnabled && (
+                  <div
+                    className="absolute top-1/3 left-1/4 w-32 h-32 border-2 border-warning/80 rounded-sm bg-warning/5 animate-pulse"
+                    style={{ boxShadow: "0 0 15px rgba(245,158,11,0.2)" }}
+                  >
+                    <div className="absolute -top-7 left-[-2px] bg-warning text-warning-foreground text-[11px] px-2 py-0.5 font-bold shadow-md flex items-center">
+                      <span className="w-1.5 h-1.5 bg-white rounded-full mr-1 animate-ping" />
+                      Simulação 89%
+                    </div>
                   </div>
-                  <div className="absolute top-1/2 -right-12 w-12 border-t-2 border-warning/50 border-dashed" />
-                  <div className="absolute top-1/2 -right-14 w-2 h-2 rounded-full bg-warning/80" />
-                </div>
+                )}
 
                 {/* Bottom controls */}
                 <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between bg-gradient-to-t from-black/80 to-transparent p-4 pt-12">
@@ -343,6 +399,33 @@ export default function Cameras() {
                       data-testid="button-snapshot"
                     >
                       <CameraIcon className="w-4 h-4" />
+                    </Button>
+
+                    <div className="w-px h-4 bg-white/20 mx-1" />
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-white hover:bg-white/20 h-8 px-2 gap-1.5 ${visionEnabled ? "bg-primary/40" : ""}`}
+                      onClick={() => setVisionEnabled(!visionEnabled)}
+                      disabled={isAiLoading}
+                    >
+                      {visionEnabled ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        {isAiLoading ? "A carregar..." : "Visão IA"}
+                      </span>
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`text-white hover:bg-white/20 h-8 px-2 gap-1.5 ${useRealCamera ? "bg-success/40" : ""}`}
+                      onClick={() => setUseRealCamera(!useRealCamera)}
+                    >
+                      <FlipView className="w-4 h-4" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                        {useRealCamera ? "Simulado" : "Real"}
+                      </span>
                     </Button>
                   </div>
                   <div className="text-xs text-white/70 font-mono hidden sm:block">
