@@ -12,7 +12,7 @@ import {
   MapPin,
   Eye,
   EyeOff,
-  FlipView,
+  SwitchCamera,
 } from "lucide-react";
 import { useObjectDetection } from "@/hooks/useObjectDetection";
 import { VisionOverlay } from "@/components/vision/VisionOverlay";
@@ -422,7 +422,7 @@ export default function Cameras() {
                       className={`text-white hover:bg-white/20 h-8 px-2 gap-1.5 ${useRealCamera ? "bg-success/40" : ""}`}
                       onClick={() => setUseRealCamera(!useRealCamera)}
                     >
-                      <FlipView className="w-4 h-4" />
+                      <SwitchCamera className="w-4 h-4" />
                       <span className="text-[10px] font-bold uppercase tracking-wider">
                         {useRealCamera ? "Simulado" : "Real"}
                       </span>
