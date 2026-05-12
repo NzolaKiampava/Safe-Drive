@@ -47,3 +47,6 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+
+# Generated at build time — do not commit
+artifacts/safedrive/public/mediapipe-wasm/

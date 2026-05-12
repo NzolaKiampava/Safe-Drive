@@ -19,10 +19,9 @@ export function useObjectDetection() {
       try {
         console.log('[Vision] Loading WASM runtime...');
 
-        // Use pinned version matching the installed package for reliability
-        const vision = await FilesetResolver.forVisionTasks(
-          'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'
-        );
+        // Use locally served WASM files (copied from node_modules by vite.config.ts)
+        // This guarantees the WASM version always matches the installed package.
+        const vision = await FilesetResolver.forVisionTasks('/mediapipe-wasm');
 
         console.log('[Vision] WASM loaded. Loading model...');
 
